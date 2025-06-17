@@ -146,13 +146,16 @@ jobs:
         sleep 10
       env:
         NODE_ENV: test
-        PORT: 3000
+        PORT: 3002  # Use different port for CI to avoid conflicts
+        JWT_SECRET: test-secret
+        JWT_REFRESH_SECRET: test-refresh-secret
     
     - name: Run API health check tests
       run: |
-        # Test basic endpoints
-        curl -f http://localhost:3000/health || exit 1
-        curl -f http://localhost:3000/ || exit 1
+        # Test basic endpoints using dynamic port
+        TEST_PORT=${PORT:-3002}
+        curl -f http://localhost:$TEST_PORT/health || exit 1
+        curl -f http://localhost:$TEST_PORT/ || exit 1
         echo "✅ Basic API endpoints are working"
     
     - name: Run custom API tests
